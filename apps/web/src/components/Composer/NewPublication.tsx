@@ -218,7 +218,7 @@ const NewPublication: FC<Props> = ({ publication }) => {
     }
   });
 
-  const typedDataGenerator = async (generatedData: any, isDataAvailabilityPost: boolean = false) => {
+  const typedDataGenerator = async (generatedData: any, isDataAvailabilityPublication: boolean = false) => {
     const { id, typedData } = generatedData;
     const {
       profileId,
@@ -246,7 +246,7 @@ const NewPublication: FC<Props> = ({ publication }) => {
       sig
     };
 
-    if (isDataAvailabilityPost) {
+    if (isDataAvailabilityPublication) {
       return await broadcastDataAvailability({ variables: { request: { id, signature } } });
     }
 
@@ -270,6 +270,11 @@ const NewPublication: FC<Props> = ({ publication }) => {
 
   // Data availability typed data generation
   const [createDataAvailabilityPostTypedData] = useCreateDataAvailabilityPostTypedDataMutation({
+    onCompleted: async ({ createDataAvailabilityPostTypedData }) =>
+      await typedDataGenerator(createDataAvailabilityPostTypedData, true)
+  });
+
+  const [createDataAvailabilityCommentTypedData] = useCreateDataAvailabilityPostTypedDataMutation({
     onCompleted: async ({ createDataAvailabilityPostTypedData }) =>
       await typedDataGenerator(createDataAvailabilityPostTypedData, true)
   });
@@ -322,7 +327,10 @@ const NewPublication: FC<Props> = ({ publication }) => {
     const variables = { request };
 
     if (isComment) {
-      await createDataAvailabilityCommentViaDispatcher({ variables });
+      const { data } = await createDataAvailabilityCommentViaDispatcher({ variables });
+      if (!data?.createDataAvailabilityCommentViaDispatcher?.id) {
+        await createDataAvailabilityCommentTypedData({ variables });
+      }
       return;
     }
 
@@ -330,6 +338,7 @@ const NewPublication: FC<Props> = ({ publication }) => {
     if (!data?.createDataAvailabilityPostViaDispatcher?.id) {
       await createDataAvailabilityPostTypedData({ variables });
     }
+    return;
   };
 
   const createViaDispatcher = async (request: any) => {
@@ -555,7 +564,7 @@ const NewPublication: FC<Props> = ({ publication }) => {
       const dataAvailablityRequest = {
         from: currentProfile?.id,
         ...(isComment && {
-          publicationId: publication.__typename === 'Mirror' ? publication?.mirrorOf?.id : publication?.id
+          commentOn: publication.__typename === 'Mirror' ? publication?.mirrorOf?.id : publication?.id
         }),
         metadata: { v2: { ...metadata } }
       };
