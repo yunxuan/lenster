@@ -518,9 +518,9 @@ const NewPublication: FC<Props> = ({ publication }) => {
       };
 
       const isRevertCollectModule = selectedCollectModule === CollectModules.RevertCollectModule;
-      const useDataAvailability = isComment
-        ? publication.isDataAvailability && isRevertCollectModule
-        : isRevertCollectModule;
+      const useDataAvailability =
+        !restricted &&
+        (isComment ? publication.isDataAvailability && isRevertCollectModule : isRevertCollectModule);
 
       let arweaveId = null;
       if (restricted) {
