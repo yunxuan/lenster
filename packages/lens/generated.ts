@@ -7106,6 +7106,47 @@ export type CreateCommentViaDispatcherMutation = {
     | { __typename?: 'RelayerResult'; txHash: any; txId: any };
 };
 
+export type CreateDataAvailabilityCommentTypedDataMutationVariables = Exact<{
+  request: CreateDataAvailabilityCommentRequest;
+}>;
+
+export type CreateDataAvailabilityCommentTypedDataMutation = {
+  __typename?: 'Mutation';
+  createDataAvailabilityCommentTypedData: {
+    __typename?: 'CreateCommentBroadcastItemResult';
+    id: any;
+    expiresAt: any;
+    typedData: {
+      __typename?: 'CreateCommentEIP712TypedData';
+      types: {
+        __typename?: 'CreateCommentEIP712TypedDataTypes';
+        CommentWithSig: Array<{ __typename?: 'EIP712TypedDataField'; name: string; type: string }>;
+      };
+      domain: {
+        __typename?: 'EIP712TypedDataDomain';
+        name: string;
+        chainId: any;
+        version: string;
+        verifyingContract: any;
+      };
+      value: {
+        __typename?: 'CreateCommentEIP712TypedDataValue';
+        nonce: any;
+        deadline: any;
+        profileId: any;
+        contentURI: any;
+        profileIdPointed: any;
+        pubIdPointed: any;
+        collectModule: any;
+        collectModuleInitData: any;
+        referenceModule: any;
+        referenceModuleInitData: any;
+        referenceModuleData: any;
+      };
+    };
+  };
+};
+
 export type CreateDataAvailabilityCommentViaDispatcherMutationVariables = Exact<{
   request: CreateDataAvailabilityCommentRequest;
 }>;
@@ -30143,6 +30184,84 @@ export type CreateCommentViaDispatcherMutationResult =
 export type CreateCommentViaDispatcherMutationOptions = Apollo.BaseMutationOptions<
   CreateCommentViaDispatcherMutation,
   CreateCommentViaDispatcherMutationVariables
+>;
+export const CreateDataAvailabilityCommentTypedDataDocument = gql`
+  mutation CreateDataAvailabilityCommentTypedData($request: CreateDataAvailabilityCommentRequest!) {
+    createDataAvailabilityCommentTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          CommentWithSig {
+            name
+            type
+          }
+        }
+        domain {
+          name
+          chainId
+          version
+          verifyingContract
+        }
+        value {
+          nonce
+          deadline
+          profileId
+          contentURI
+          profileIdPointed
+          pubIdPointed
+          collectModule
+          collectModuleInitData
+          referenceModule
+          referenceModuleInitData
+          referenceModuleData
+        }
+      }
+    }
+  }
+`;
+export type CreateDataAvailabilityCommentTypedDataMutationFn = Apollo.MutationFunction<
+  CreateDataAvailabilityCommentTypedDataMutation,
+  CreateDataAvailabilityCommentTypedDataMutationVariables
+>;
+
+/**
+ * __useCreateDataAvailabilityCommentTypedDataMutation__
+ *
+ * To run a mutation, you first call `useCreateDataAvailabilityCommentTypedDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDataAvailabilityCommentTypedDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDataAvailabilityCommentTypedDataMutation, { data, loading, error }] = useCreateDataAvailabilityCommentTypedDataMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateDataAvailabilityCommentTypedDataMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDataAvailabilityCommentTypedDataMutation,
+    CreateDataAvailabilityCommentTypedDataMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateDataAvailabilityCommentTypedDataMutation,
+    CreateDataAvailabilityCommentTypedDataMutationVariables
+  >(CreateDataAvailabilityCommentTypedDataDocument, options);
+}
+export type CreateDataAvailabilityCommentTypedDataMutationHookResult = ReturnType<
+  typeof useCreateDataAvailabilityCommentTypedDataMutation
+>;
+export type CreateDataAvailabilityCommentTypedDataMutationResult =
+  Apollo.MutationResult<CreateDataAvailabilityCommentTypedDataMutation>;
+export type CreateDataAvailabilityCommentTypedDataMutationOptions = Apollo.BaseMutationOptions<
+  CreateDataAvailabilityCommentTypedDataMutation,
+  CreateDataAvailabilityCommentTypedDataMutationVariables
 >;
 export const CreateDataAvailabilityCommentViaDispatcherDocument = gql`
   mutation CreateDataAvailabilityCommentViaDispatcher($request: CreateDataAvailabilityCommentRequest!) {
