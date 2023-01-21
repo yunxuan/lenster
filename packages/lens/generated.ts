@@ -35,6 +35,8 @@ export type Scalars = {
   Locale: any;
   Markdown: any;
   MimeType: any;
+  NftGalleryId: any;
+  NftGalleryName: any;
   NftOwnershipId: any;
   Nonce: any;
   NotificationId: any;
@@ -182,6 +184,22 @@ export type AuthenticationResult = {
   /** The refresh token */
   refreshToken: Scalars['Jwt'];
 };
+
+export type BroadcastDataAvailabilityError = {
+  __typename?: 'BroadcastDataAvailabilityError';
+  reason: BroadcastDataAvailabilityErrorReasons;
+};
+
+/** The broadcast data availability error reasons */
+export enum BroadcastDataAvailabilityErrorReasons {
+  Error = 'ERROR',
+  Expired = 'EXPIRED',
+  WrongWalletSigned = 'WRONG_WALLET_SIGNED'
+}
+
+export type BroadcastDataAvailabilityUnion =
+  | BroadcastDataAvailabilityError
+  | CreateDataAvailabilityPublicationResult;
 
 export type BroadcastRequest = {
   id: Scalars['BroadcastId'];
@@ -509,6 +527,37 @@ export type CreateCommentEip712TypedDataValue = {
   referenceModule: Scalars['ContractAddress'];
   referenceModuleData: Scalars['ReferenceModuleData'];
   referenceModuleInitData: Scalars['ReferenceModuleData'];
+};
+
+export type CreateDataAvailabilityCommentRequest = {
+  /** Publication your commenting on */
+  commentOn: Scalars['InternalPublicationId'];
+  /** Profile id */
+  from: Scalars['ProfileId'];
+  /** The metadata properties */
+  metadata: PublicationMetadataRequest;
+};
+
+export type CreateDataAvailabilityMirrorRequest = {
+  /** Profile id which will broadcast the mirror */
+  from: Scalars['ProfileId'];
+  /** The publication to mirror */
+  mirror: Scalars['InternalPublicationId'];
+};
+
+export type CreateDataAvailabilityPostRequest = {
+  /** Profile id */
+  from: Scalars['ProfileId'];
+  /** The metadata properties */
+  metadata: PublicationMetadataRequest;
+};
+
+export type CreateDataAvailabilityPublicationResult = {
+  __typename?: 'CreateDataAvailabilityPublicationResult';
+  /** The id of the post */
+  id: Scalars['InternalPublicationId'];
+  /** The proofs for the DA */
+  proofs: Scalars['String'];
 };
 
 /** The broadcast item */
@@ -988,6 +1037,10 @@ export type DegreesOfSeparationReferenceModuleSettings = {
   mirrorsRestricted: Scalars['Boolean'];
   /** The reference modules enum */
   type: ReferenceModules;
+};
+
+export type DismissRecommendedProfilesRequest = {
+  profileIds: Array<Scalars['ProfileId']>;
 };
 
 /** The dispatcher */
@@ -1874,15 +1927,24 @@ export type Mutation = {
   addReaction?: Maybe<Scalars['Void']>;
   authenticate: AuthenticationResult;
   broadcast: RelayResult;
+  broadcastDataAvailability: BroadcastDataAvailabilityUnion;
   claim: RelayResult;
   createAttachMediaData: PublicMediaResults;
   createBurnProfileTypedData: CreateBurnProfileBroadcastItemResult;
   createCollectTypedData: CreateCollectBroadcastItemResult;
   createCommentTypedData: CreateCommentBroadcastItemResult;
   createCommentViaDispatcher: RelayResult;
+  createDataAvailabilityCommentTypedData: CreateCommentBroadcastItemResult;
+  createDataAvailabilityCommentViaDispatcher: CreateDataAvailabilityPublicationResult;
+  createDataAvailabilityMirrorTypedData: CreateMirrorBroadcastItemResult;
+  createDataAvailabilityMirrorViaDispatcher: CreateDataAvailabilityPublicationResult;
+  createDataAvailabilityPostTypedData: CreatePostBroadcastItemResult;
+  createDataAvailabilityPostViaDispatcher: CreateDataAvailabilityPublicationResult;
   createFollowTypedData: CreateFollowBroadcastItemResult;
   createMirrorTypedData: CreateMirrorBroadcastItemResult;
   createMirrorViaDispatcher: RelayResult;
+  /** Create a new NFT gallery */
+  createNftGallery: NftGallery;
   createPostTypedData: CreatePostBroadcastItemResult;
   createPostViaDispatcher: RelayResult;
   createProfile: RelayResult;
@@ -1896,6 +1958,9 @@ export type Mutation = {
   createSetProfileMetadataViaDispatcher: RelayResult;
   createToggleFollowTypedData: CreateToggleFollowBroadcastItemResult;
   createUnfollowTypedData: CreateUnfollowBroadcastItemResult;
+  /** Delete an NFT Gallery */
+  deleteNftGallery: Scalars['Void'];
+  dismissRecommendedProfiles: Scalars['Void'];
   hel?: Maybe<Scalars['Void']>;
   hidePublication?: Maybe<Scalars['Void']>;
   idKitPhoneVerifyWebhook: IdKitPhoneVerifyWebhookResultStatusType;
@@ -1905,6 +1970,12 @@ export type Mutation = {
   removeProfileInterests?: Maybe<Scalars['Void']>;
   removeReaction?: Maybe<Scalars['Void']>;
   reportPublication?: Maybe<Scalars['Void']>;
+  /** Update the name of an NFT gallery */
+  updateNftGalleryInfo: Scalars['Void'];
+  /** Add and/or remove NFTs to a gallery */
+  updateNftGalleryItems: Scalars['Void'];
+  /** Update the order of NFTs in a gallery */
+  updateNftGalleryOrder: Scalars['Void'];
 };
 
 export type MutationAchArgs = {
@@ -1924,6 +1995,10 @@ export type MutationAuthenticateArgs = {
 };
 
 export type MutationBroadcastArgs = {
+  request: BroadcastRequest;
+};
+
+export type MutationBroadcastDataAvailabilityArgs = {
   request: BroadcastRequest;
 };
 
@@ -1954,6 +2029,30 @@ export type MutationCreateCommentViaDispatcherArgs = {
   request: CreatePublicCommentRequest;
 };
 
+export type MutationCreateDataAvailabilityCommentTypedDataArgs = {
+  request: CreateDataAvailabilityCommentRequest;
+};
+
+export type MutationCreateDataAvailabilityCommentViaDispatcherArgs = {
+  request: CreateDataAvailabilityCommentRequest;
+};
+
+export type MutationCreateDataAvailabilityMirrorTypedDataArgs = {
+  request: CreateDataAvailabilityMirrorRequest;
+};
+
+export type MutationCreateDataAvailabilityMirrorViaDispatcherArgs = {
+  request: CreateDataAvailabilityMirrorRequest;
+};
+
+export type MutationCreateDataAvailabilityPostTypedDataArgs = {
+  request: CreateDataAvailabilityPostRequest;
+};
+
+export type MutationCreateDataAvailabilityPostViaDispatcherArgs = {
+  request: CreateDataAvailabilityPostRequest;
+};
+
 export type MutationCreateFollowTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: FollowRequest;
@@ -1966,6 +2065,10 @@ export type MutationCreateMirrorTypedDataArgs = {
 
 export type MutationCreateMirrorViaDispatcherArgs = {
   request: CreateMirrorRequest;
+};
+
+export type MutationCreateNftGalleryArgs = {
+  request: NftGalleryCreateRequest;
 };
 
 export type MutationCreatePostTypedDataArgs = {
@@ -2029,6 +2132,14 @@ export type MutationCreateUnfollowTypedDataArgs = {
   request: UnfollowRequest;
 };
 
+export type MutationDeleteNftGalleryArgs = {
+  request: NftGalleryDeleteRequest;
+};
+
+export type MutationDismissRecommendedProfilesArgs = {
+  request: DismissRecommendedProfilesRequest;
+};
+
 export type MutationHelArgs = {
   request: HelRequest;
 };
@@ -2059,6 +2170,18 @@ export type MutationRemoveReactionArgs = {
 
 export type MutationReportPublicationArgs = {
   request: ReportPublicationRequest;
+};
+
+export type MutationUpdateNftGalleryInfoArgs = {
+  request: NftGalleryUpdateInfoRequest;
+};
+
+export type MutationUpdateNftGalleryItemsArgs = {
+  request: NftGalleryUpdateItemsRequest;
+};
+
+export type MutationUpdateNftGalleryOrderArgs = {
+  request: NftGalleryUpdateItemOrderRequest;
 };
 
 export type MutualFollowersProfilesQueryRequest = {
@@ -2186,6 +2309,79 @@ export type NewReactionNotification = {
   reaction: ReactionTypes;
 };
 
+/** The NFT gallery input */
+export type NftGalleriesRequest = {
+  /** The profile id */
+  profileId: Scalars['ProfileId'];
+};
+
+/** The NFT gallery */
+export type NftGallery = {
+  __typename?: 'NftGallery';
+  /** The creation date */
+  createdAt: Scalars['DateTime'];
+  /** The NFT gallery id */
+  id: Scalars['NftGalleryId'];
+  /** The NFTs in the gallery */
+  items: Array<Nft>;
+  /** The NFT gallery name */
+  name: Scalars['String'];
+  /** The owning profile id */
+  profileId: Scalars['ProfileId'];
+  /** The last update date */
+  updatedAt: Scalars['DateTime'];
+};
+
+/** The input for creating a new NFT gallery */
+export type NftGalleryCreateRequest = {
+  /** The NFTs in the gallery */
+  items: Array<NftInput>;
+  /** The name of the NFT gallery */
+  name: Scalars['NftGalleryName'];
+  /** The owner profile id */
+  profileId: Scalars['ProfileId'];
+};
+
+/** The input for deleting gallery */
+export type NftGalleryDeleteRequest = {
+  /** The NFT gallery id */
+  galleryId: Scalars['NftGalleryId'];
+  /** The profile id of the gallery owner */
+  profileId: Scalars['ProfileId'];
+};
+
+/** The input for updating NFT gallery name */
+export type NftGalleryUpdateInfoRequest = {
+  /** The NFT gallery id */
+  galleryId: Scalars['NftGalleryId'];
+  /** The name of the NFT gallery */
+  name: Scalars['NftGalleryName'];
+  /** The profile id of the gallery owner */
+  profileId: Scalars['ProfileId'];
+};
+
+/** The input for reordering gallery items */
+export type NftGalleryUpdateItemOrderRequest = {
+  /** The NFT gallery id */
+  galleryId: Scalars['NftGalleryId'];
+  /** The profile id of the gallery owner */
+  profileId: Scalars['ProfileId'];
+  /** The order of the NFTs in the gallery */
+  updates: Array<NftUpdateItemOrder>;
+};
+
+/** The input for adding/removing gallery items */
+export type NftGalleryUpdateItemsRequest = {
+  /** The NFT gallery id */
+  galleryId: Scalars['NftGalleryId'];
+  /** The profile id of the gallery owner */
+  profileId: Scalars['ProfileId'];
+  /** The contents of the NFT gallery */
+  toAdd?: InputMaybe<Array<NftInput>>;
+  /** The contents of the NFT gallery */
+  toRemove?: InputMaybe<Array<NftInput>>;
+};
+
 /** The NFT image */
 export type NftImage = {
   __typename?: 'NftImage';
@@ -2199,6 +2395,16 @@ export type NftImage = {
   uri: Scalars['Url'];
   /** If the NFT is verified */
   verified: Scalars['Boolean'];
+};
+
+/** The NFT input for gallery */
+export type NftInput = {
+  /** The chain ID of the NFT */
+  chainId: Scalars['ChainId'];
+  /** The contract address of the NFT */
+  contractAddress: Scalars['ContractAddress'];
+  /** The token ID of the NFT */
+  tokenId: Scalars['String'];
 };
 
 export type NftOwnershipChallenge = {
@@ -2247,6 +2453,18 @@ export type NftOwnershipOutput = {
   contractType: ContractType;
   /** The optional token ID(s) to check for ownership */
   tokenIds?: Maybe<Array<Scalars['TokenId']>>;
+};
+
+/** The input for updating the order of a NFT gallery item */
+export type NftUpdateItemOrder = {
+  /** The chain ID of the NFT */
+  chainId: Scalars['ChainId'];
+  /** The contract address of the NFT */
+  contractAddress: Scalars['ContractAddress'];
+  /** The new order of the NFT in the gallery */
+  newOrder: Scalars['Int'];
+  /** The token ID of the NFT */
+  tokenId: Scalars['String'];
 };
 
 export type Notification =
@@ -2772,7 +2990,7 @@ export enum PublicationMediaSource {
   Lens = 'LENS'
 }
 
-/** Publication metadata content waring filters */
+/** Publication metadata content warning filters */
 export type PublicationMetadataContentWarningFilter = {
   /** By default all content warnings will be hidden you can include them in your query by adding them to this array. */
   includeOneOf?: InputMaybe<Array<PublicationContentWarning>>;
@@ -2804,6 +3022,11 @@ export type PublicationMetadataMediaInput = {
   source?: InputMaybe<PublicationMediaSource>;
   /** This is the mime type of media */
   type?: InputMaybe<Scalars['MimeType']>;
+};
+
+export type PublicationMetadataRequest = {
+  v1?: InputMaybe<PublicationMetadataV1Input>;
+  v2?: InputMaybe<PublicationMetadataV2Input>;
 };
 
 export type PublicationMetadataStatus = {
@@ -3076,6 +3299,8 @@ export type Query = {
   internalPublicationFilter: PaginatedPublicationResult;
   isIDKitPhoneVerified: Scalars['Boolean'];
   mutualFollowersProfiles: PaginatedProfileResult;
+  /** Get all NFT galleries for a profile */
+  nftGalleries: Array<NftGallery>;
   nftOwnershipChallenge: NftOwnershipChallengeResult;
   nfts: NfTsResult;
   notifications: PaginatedNotificationResult;
@@ -3179,6 +3404,10 @@ export type QueryInternalPublicationFilterArgs = {
 
 export type QueryMutualFollowersProfilesArgs = {
   request: MutualFollowersProfilesQueryRequest;
+};
+
+export type QueryNftGalleriesArgs = {
+  request: NftGalleriesRequest;
 };
 
 export type QueryNftOwnershipChallengeArgs = {
@@ -3321,7 +3550,7 @@ export type ReferenceModule =
   | UnknownReferenceModuleSettings;
 
 export type ReferenceModuleParams = {
-  /** The degrees of seperation reference module */
+  /** The degrees of separation reference module */
   degreesOfSeparationReferenceModule?: InputMaybe<DegreesOfSeparationReferenceModuleParams>;
   /** The follower only reference module */
   followerOnlyReferenceModule?: InputMaybe<Scalars['Boolean']>;
@@ -3867,6 +4096,7 @@ export type CommentFieldsFragment = {
   hasCollectedByMe: boolean;
   onChainContentURI: string;
   isGated: boolean;
+  isDataAvailability: boolean;
   hidden: boolean;
   createdAt: any;
   appId?: any | null;
@@ -4106,6 +4336,7 @@ export type CommentFieldsFragment = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         profile: {
@@ -4321,6 +4552,7 @@ export type CommentFieldsFragment = {
               id: any;
               reaction?: ReactionTypes | null;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -4534,6 +4766,7 @@ export type CommentFieldsFragment = {
                     mirrors: Array<any>;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     createdAt: any;
                     profile: {
                       __typename?: 'Profile';
@@ -4579,6 +4812,7 @@ export type CommentFieldsFragment = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -4826,6 +5060,7 @@ export type CommentFieldsFragment = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -5063,6 +5298,7 @@ export type CommentFieldsFragment = {
         id: any;
         reaction?: ReactionTypes | null;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -5276,6 +5512,7 @@ export type CommentFieldsFragment = {
               mirrors: Array<any>;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               createdAt: any;
               profile: {
                 __typename?: 'Profile';
@@ -5321,6 +5558,7 @@ export type CommentFieldsFragment = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -5561,6 +5799,7 @@ export type CommentFieldsFragment = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -5907,6 +6146,7 @@ export type MirrorFieldsFragment = {
   id: any;
   reaction?: ReactionTypes | null;
   isGated: boolean;
+  isDataAvailability: boolean;
   hidden: boolean;
   createdAt: any;
   appId?: any | null;
@@ -6120,6 +6360,7 @@ export type MirrorFieldsFragment = {
         mirrors: Array<any>;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         createdAt: any;
         profile: {
           __typename?: 'Profile';
@@ -6165,6 +6406,7 @@ export type MirrorFieldsFragment = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -6406,6 +6648,7 @@ export type PostFieldsFragment = {
   hasCollectedByMe: boolean;
   onChainContentURI: string;
   isGated: boolean;
+  isDataAvailability: boolean;
   hidden: boolean;
   createdAt: any;
   appId?: any | null;
@@ -6734,6 +6977,17 @@ export type BroadcastMutation = {
     | { __typename?: 'RelayerResult'; txHash: any; txId: any };
 };
 
+export type BroadcastDataAvailabilityMutationVariables = Exact<{
+  request: BroadcastRequest;
+}>;
+
+export type BroadcastDataAvailabilityMutation = {
+  __typename?: 'Mutation';
+  broadcastDataAvailability:
+    | { __typename?: 'BroadcastDataAvailabilityError'; reason: BroadcastDataAvailabilityErrorReasons }
+    | { __typename?: 'CreateDataAvailabilityPublicationResult'; id: any; proofs: string };
+};
+
 export type CreateBurnProfileTypedDataMutationVariables = Exact<{
   options?: InputMaybe<TypedDataOptions>;
   request: BurnProfileRequest;
@@ -6850,6 +7104,83 @@ export type CreateCommentViaDispatcherMutation = {
   createCommentViaDispatcher:
     | { __typename?: 'RelayError'; reason: RelayErrorReasons }
     | { __typename?: 'RelayerResult'; txHash: any; txId: any };
+};
+
+export type CreateDataAvailabilityCommentViaDispatcherMutationVariables = Exact<{
+  request: CreateDataAvailabilityCommentRequest;
+}>;
+
+export type CreateDataAvailabilityCommentViaDispatcherMutation = {
+  __typename?: 'Mutation';
+  createDataAvailabilityCommentViaDispatcher: {
+    __typename?: 'CreateDataAvailabilityPublicationResult';
+    id: any;
+    proofs: string;
+  };
+};
+
+export type CreateDataAvailabilityMirrorViaDispatcherMutationVariables = Exact<{
+  request: CreateDataAvailabilityMirrorRequest;
+}>;
+
+export type CreateDataAvailabilityMirrorViaDispatcherMutation = {
+  __typename?: 'Mutation';
+  createDataAvailabilityMirrorViaDispatcher: {
+    __typename?: 'CreateDataAvailabilityPublicationResult';
+    id: any;
+    proofs: string;
+  };
+};
+
+export type CreateDataAvailabilityPostTypedDataMutationVariables = Exact<{
+  request: CreateDataAvailabilityPostRequest;
+}>;
+
+export type CreateDataAvailabilityPostTypedDataMutation = {
+  __typename?: 'Mutation';
+  createDataAvailabilityPostTypedData: {
+    __typename?: 'CreatePostBroadcastItemResult';
+    id: any;
+    expiresAt: any;
+    typedData: {
+      __typename?: 'CreatePostEIP712TypedData';
+      types: {
+        __typename?: 'CreatePostEIP712TypedDataTypes';
+        PostWithSig: Array<{ __typename?: 'EIP712TypedDataField'; name: string; type: string }>;
+      };
+      domain: {
+        __typename?: 'EIP712TypedDataDomain';
+        name: string;
+        chainId: any;
+        version: string;
+        verifyingContract: any;
+      };
+      value: {
+        __typename?: 'CreatePostEIP712TypedDataValue';
+        nonce: any;
+        deadline: any;
+        profileId: any;
+        contentURI: any;
+        collectModule: any;
+        collectModuleInitData: any;
+        referenceModule: any;
+        referenceModuleInitData: any;
+      };
+    };
+  };
+};
+
+export type CreateDataAvailabilityPostViaDispatcherMutationVariables = Exact<{
+  request: CreateDataAvailabilityPostRequest;
+}>;
+
+export type CreateDataAvailabilityPostViaDispatcherMutation = {
+  __typename?: 'Mutation';
+  createDataAvailabilityPostViaDispatcher: {
+    __typename?: 'CreateDataAvailabilityPublicationResult';
+    id: any;
+    proofs: string;
+  };
 };
 
 export type CreateFollowTypedDataMutationVariables = Exact<{
@@ -7588,6 +7919,7 @@ export type CommentFeedQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -7827,6 +8159,7 @@ export type CommentFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 profile: {
@@ -8042,6 +8375,7 @@ export type CommentFeedQuery = {
                       id: any;
                       reaction?: ReactionTypes | null;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -8262,6 +8596,7 @@ export type CommentFeedQuery = {
                             mirrors: Array<any>;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             createdAt: any;
                             profile: {
                               __typename?: 'Profile';
@@ -8315,6 +8650,7 @@ export type CommentFeedQuery = {
                             hasCollectedByMe: boolean;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             hidden: boolean;
                             createdAt: any;
                             appId?: any | null;
@@ -8603,6 +8939,7 @@ export type CommentFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -8851,6 +9188,7 @@ export type CommentFeedQuery = {
                 id: any;
                 reaction?: ReactionTypes | null;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -9064,6 +9402,7 @@ export type CommentFeedQuery = {
                       mirrors: Array<any>;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       createdAt: any;
                       profile: {
                         __typename?: 'Profile';
@@ -9113,6 +9452,7 @@ export type CommentFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -9364,6 +9704,7 @@ export type CommentFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -9677,6 +10018,7 @@ export type ExploreFeedQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -9916,6 +10258,7 @@ export type ExploreFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 profile: {
@@ -10131,6 +10474,7 @@ export type ExploreFeedQuery = {
                       id: any;
                       reaction?: ReactionTypes | null;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -10351,6 +10695,7 @@ export type ExploreFeedQuery = {
                             mirrors: Array<any>;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             createdAt: any;
                             profile: {
                               __typename?: 'Profile';
@@ -10404,6 +10749,7 @@ export type ExploreFeedQuery = {
                             hasCollectedByMe: boolean;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             hidden: boolean;
                             createdAt: any;
                             appId?: any | null;
@@ -10692,6 +11038,7 @@ export type ExploreFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -10940,6 +11287,7 @@ export type ExploreFeedQuery = {
                 id: any;
                 reaction?: ReactionTypes | null;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -11153,6 +11501,7 @@ export type ExploreFeedQuery = {
                       mirrors: Array<any>;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       createdAt: any;
                       profile: {
                         __typename?: 'Profile';
@@ -11202,6 +11551,7 @@ export type ExploreFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -11453,6 +11803,7 @@ export type ExploreFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -11691,6 +12042,7 @@ export type ExploreFeedQuery = {
           id: any;
           reaction?: ReactionTypes | null;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -11904,6 +12256,7 @@ export type ExploreFeedQuery = {
                 mirrors: Array<any>;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 createdAt: any;
                 profile: {
                   __typename?: 'Profile';
@@ -11949,6 +12302,7 @@ export type ExploreFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -12189,6 +12543,7 @@ export type ExploreFeedQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -12444,6 +12799,7 @@ export type FeedHighlightsQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -12683,6 +13039,7 @@ export type FeedHighlightsQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 profile: {
@@ -12898,6 +13255,7 @@ export type FeedHighlightsQuery = {
                       id: any;
                       reaction?: ReactionTypes | null;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -13118,6 +13476,7 @@ export type FeedHighlightsQuery = {
                             mirrors: Array<any>;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             createdAt: any;
                             profile: {
                               __typename?: 'Profile';
@@ -13171,6 +13530,7 @@ export type FeedHighlightsQuery = {
                             hasCollectedByMe: boolean;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             hidden: boolean;
                             createdAt: any;
                             appId?: any | null;
@@ -13459,6 +13819,7 @@ export type FeedHighlightsQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -13707,6 +14068,7 @@ export type FeedHighlightsQuery = {
                 id: any;
                 reaction?: ReactionTypes | null;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -13920,6 +14282,7 @@ export type FeedHighlightsQuery = {
                       mirrors: Array<any>;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       createdAt: any;
                       profile: {
                         __typename?: 'Profile';
@@ -13969,6 +14332,7 @@ export type FeedHighlightsQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -14220,6 +14584,7 @@ export type FeedHighlightsQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -14458,6 +14823,7 @@ export type FeedHighlightsQuery = {
           id: any;
           reaction?: ReactionTypes | null;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -14671,6 +15037,7 @@ export type FeedHighlightsQuery = {
                 mirrors: Array<any>;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 createdAt: any;
                 profile: {
                   __typename?: 'Profile';
@@ -14716,6 +15083,7 @@ export type FeedHighlightsQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -14956,6 +15324,7 @@ export type FeedHighlightsQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -15953,6 +16322,7 @@ export type ProfileFeedQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -16192,6 +16562,7 @@ export type ProfileFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 profile: {
@@ -16407,6 +16778,7 @@ export type ProfileFeedQuery = {
                       id: any;
                       reaction?: ReactionTypes | null;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -16627,6 +16999,7 @@ export type ProfileFeedQuery = {
                             mirrors: Array<any>;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             createdAt: any;
                             profile: {
                               __typename?: 'Profile';
@@ -16680,6 +17053,7 @@ export type ProfileFeedQuery = {
                             hasCollectedByMe: boolean;
                             onChainContentURI: string;
                             isGated: boolean;
+                            isDataAvailability: boolean;
                             hidden: boolean;
                             createdAt: any;
                             appId?: any | null;
@@ -16968,6 +17342,7 @@ export type ProfileFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -17216,6 +17591,7 @@ export type ProfileFeedQuery = {
                 id: any;
                 reaction?: ReactionTypes | null;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -17429,6 +17805,7 @@ export type ProfileFeedQuery = {
                       mirrors: Array<any>;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       createdAt: any;
                       profile: {
                         __typename?: 'Profile';
@@ -17478,6 +17855,7 @@ export type ProfileFeedQuery = {
                       hasCollectedByMe: boolean;
                       onChainContentURI: string;
                       isGated: boolean;
+                      isDataAvailability: boolean;
                       hidden: boolean;
                       createdAt: any;
                       appId?: any | null;
@@ -17729,6 +18107,7 @@ export type ProfileFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -17967,6 +18346,7 @@ export type ProfileFeedQuery = {
           id: any;
           reaction?: ReactionTypes | null;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -18180,6 +18560,7 @@ export type ProfileFeedQuery = {
                 mirrors: Array<any>;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 createdAt: any;
                 profile: {
                   __typename?: 'Profile';
@@ -18225,6 +18606,7 @@ export type ProfileFeedQuery = {
                 hasCollectedByMe: boolean;
                 onChainContentURI: string;
                 isGated: boolean;
+                isDataAvailability: boolean;
                 hidden: boolean;
                 createdAt: any;
                 appId?: any | null;
@@ -18465,6 +18847,7 @@ export type ProfileFeedQuery = {
           hasCollectedByMe: boolean;
           onChainContentURI: string;
           isGated: boolean;
+          isDataAvailability: boolean;
           hidden: boolean;
           createdAt: any;
           appId?: any | null;
@@ -18785,6 +19168,7 @@ export type PublicationQuery = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -19029,6 +19413,7 @@ export type PublicationQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               profile: {
@@ -19244,6 +19629,7 @@ export type PublicationQuery = {
                     id: any;
                     reaction?: ReactionTypes | null;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -19460,6 +19846,7 @@ export type PublicationQuery = {
                           mirrors: Array<any>;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           createdAt: any;
                           profile: {
                             __typename?: 'Profile';
@@ -19513,6 +19900,7 @@ export type PublicationQuery = {
                           hasCollectedByMe: boolean;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           hidden: boolean;
                           createdAt: any;
                           appId?: any | null;
@@ -19798,6 +20186,7 @@ export type PublicationQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -20042,6 +20431,7 @@ export type PublicationQuery = {
               id: any;
               reaction?: ReactionTypes | null;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -20255,6 +20645,7 @@ export type PublicationQuery = {
                     mirrors: Array<any>;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     createdAt: any;
                     profile: {
                       __typename?: 'Profile';
@@ -20300,6 +20691,7 @@ export type PublicationQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -20547,6 +20939,7 @@ export type PublicationQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -20786,6 +21179,7 @@ export type PublicationQuery = {
         id: any;
         reaction?: ReactionTypes | null;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -21004,6 +21398,7 @@ export type PublicationQuery = {
               mirrors: Array<any>;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               createdAt: any;
               profile: {
                 __typename?: 'Profile';
@@ -21049,6 +21444,7 @@ export type PublicationQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -21290,6 +21686,7 @@ export type PublicationQuery = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -21658,6 +22055,7 @@ export type SearchPublicationsQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -21897,6 +22295,7 @@ export type SearchPublicationsQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     profile: {
@@ -22115,6 +22514,7 @@ export type SearchPublicationsQuery = {
                           id: any;
                           reaction?: ReactionTypes | null;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           hidden: boolean;
                           createdAt: any;
                           appId?: any | null;
@@ -22365,6 +22765,7 @@ export type SearchPublicationsQuery = {
                                 mirrors: Array<any>;
                                 onChainContentURI: string;
                                 isGated: boolean;
+                                isDataAvailability: boolean;
                                 createdAt: any;
                                 profile: {
                                   __typename?: 'Profile';
@@ -22421,6 +22822,7 @@ export type SearchPublicationsQuery = {
                                 hasCollectedByMe: boolean;
                                 onChainContentURI: string;
                                 isGated: boolean;
+                                isDataAvailability: boolean;
                                 hidden: boolean;
                                 createdAt: any;
                                 appId?: any | null;
@@ -22721,6 +23123,7 @@ export type SearchPublicationsQuery = {
                           hasCollectedByMe: boolean;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           hidden: boolean;
                           createdAt: any;
                           appId?: any | null;
@@ -23003,6 +23406,7 @@ export type SearchPublicationsQuery = {
                     id: any;
                     reaction?: ReactionTypes | null;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -23219,6 +23623,7 @@ export type SearchPublicationsQuery = {
                           mirrors: Array<any>;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           createdAt: any;
                           profile: {
                             __typename?: 'Profile';
@@ -23272,6 +23677,7 @@ export type SearchPublicationsQuery = {
                           hasCollectedByMe: boolean;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           hidden: boolean;
                           createdAt: any;
                           appId?: any | null;
@@ -23557,6 +23963,7 @@ export type SearchPublicationsQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -23805,6 +24212,7 @@ export type SearchPublicationsQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -24271,6 +24679,7 @@ export type TimelineQuery = {
             hasCollectedByMe: boolean;
             onChainContentURI: string;
             isGated: boolean;
+            isDataAvailability: boolean;
             hidden: boolean;
             createdAt: any;
             appId?: any | null;
@@ -24510,6 +24919,7 @@ export type TimelineQuery = {
                   hasCollectedByMe: boolean;
                   onChainContentURI: string;
                   isGated: boolean;
+                  isDataAvailability: boolean;
                   hidden: boolean;
                   createdAt: any;
                   profile: {
@@ -24725,6 +25135,7 @@ export type TimelineQuery = {
                         id: any;
                         reaction?: ReactionTypes | null;
                         isGated: boolean;
+                        isDataAvailability: boolean;
                         hidden: boolean;
                         createdAt: any;
                         appId?: any | null;
@@ -24971,6 +25382,7 @@ export type TimelineQuery = {
                               mirrors: Array<any>;
                               onChainContentURI: string;
                               isGated: boolean;
+                              isDataAvailability: boolean;
                               createdAt: any;
                               profile: {
                                 __typename?: 'Profile';
@@ -25024,6 +25436,7 @@ export type TimelineQuery = {
                               hasCollectedByMe: boolean;
                               onChainContentURI: string;
                               isGated: boolean;
+                              isDataAvailability: boolean;
                               hidden: boolean;
                               createdAt: any;
                               appId?: any | null;
@@ -25315,6 +25728,7 @@ export type TimelineQuery = {
                         hasCollectedByMe: boolean;
                         onChainContentURI: string;
                         isGated: boolean;
+                        isDataAvailability: boolean;
                         hidden: boolean;
                         createdAt: any;
                         appId?: any | null;
@@ -25593,6 +26007,7 @@ export type TimelineQuery = {
                   id: any;
                   reaction?: ReactionTypes | null;
                   isGated: boolean;
+                  isDataAvailability: boolean;
                   hidden: boolean;
                   createdAt: any;
                   appId?: any | null;
@@ -25806,6 +26221,7 @@ export type TimelineQuery = {
                         mirrors: Array<any>;
                         onChainContentURI: string;
                         isGated: boolean;
+                        isDataAvailability: boolean;
                         createdAt: any;
                         profile: {
                           __typename?: 'Profile';
@@ -25855,6 +26271,7 @@ export type TimelineQuery = {
                         hasCollectedByMe: boolean;
                         onChainContentURI: string;
                         isGated: boolean;
+                        isDataAvailability: boolean;
                         hidden: boolean;
                         createdAt: any;
                         appId?: any | null;
@@ -26136,6 +26553,7 @@ export type TimelineQuery = {
                   hasCollectedByMe: boolean;
                   onChainContentURI: string;
                   isGated: boolean;
+                  isDataAvailability: boolean;
                   hidden: boolean;
                   createdAt: any;
                   appId?: any | null;
@@ -26377,6 +26795,7 @@ export type TimelineQuery = {
             hasCollectedByMe: boolean;
             onChainContentURI: string;
             isGated: boolean;
+            isDataAvailability: boolean;
             hidden: boolean;
             createdAt: any;
             appId?: any | null;
@@ -26718,6 +27137,7 @@ export type TimelineQuery = {
         hasCollectedByMe: boolean;
         onChainContentURI: string;
         isGated: boolean;
+        isDataAvailability: boolean;
         hidden: boolean;
         createdAt: any;
         appId?: any | null;
@@ -26957,6 +27377,7 @@ export type TimelineQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               profile: {
@@ -27172,6 +27593,7 @@ export type TimelineQuery = {
                     id: any;
                     reaction?: ReactionTypes | null;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -27388,6 +27810,7 @@ export type TimelineQuery = {
                           mirrors: Array<any>;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           createdAt: any;
                           profile: {
                             __typename?: 'Profile';
@@ -27441,6 +27864,7 @@ export type TimelineQuery = {
                           hasCollectedByMe: boolean;
                           onChainContentURI: string;
                           isGated: boolean;
+                          isDataAvailability: boolean;
                           hidden: boolean;
                           createdAt: any;
                           appId?: any | null;
@@ -27726,6 +28150,7 @@ export type TimelineQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -27970,6 +28395,7 @@ export type TimelineQuery = {
               id: any;
               reaction?: ReactionTypes | null;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -28183,6 +28609,7 @@ export type TimelineQuery = {
                     mirrors: Array<any>;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     createdAt: any;
                     profile: {
                       __typename?: 'Profile';
@@ -28228,6 +28655,7 @@ export type TimelineQuery = {
                     hasCollectedByMe: boolean;
                     onChainContentURI: string;
                     isGated: boolean;
+                    isDataAvailability: boolean;
                     hidden: boolean;
                     createdAt: any;
                     appId?: any | null;
@@ -28475,6 +28903,7 @@ export type TimelineQuery = {
               hasCollectedByMe: boolean;
               onChainContentURI: string;
               isGated: boolean;
+              isDataAvailability: boolean;
               hidden: boolean;
               createdAt: any;
               appId?: any | null;
@@ -28768,6 +29197,10 @@ export interface PossibleTypesResultData {
 }
 const result: PossibleTypesResultData = {
   possibleTypes: {
+    BroadcastDataAvailabilityUnion: [
+      'BroadcastDataAvailabilityError',
+      'CreateDataAvailabilityPublicationResult'
+    ],
     CollectModule: [
       'FeeCollectModuleSettings',
       'FreeCollectModuleSettings',
@@ -29000,6 +29433,7 @@ export const PostFieldsFragmentDoc = gql`
     hasCollectedByMe
     onChainContentURI
     isGated
+    isDataAvailability
     canComment(profileId: $profileId) {
       result
     }
@@ -29042,6 +29476,7 @@ export const MirrorFieldsFragmentDoc = gql`
     }
     reaction(request: $reactionRequest)
     isGated
+    isDataAvailability
     canComment(profileId: $profileId) {
       result
     }
@@ -29075,6 +29510,7 @@ export const MirrorFieldsFragmentDoc = gql`
         mirrors(by: $profileId)
         onChainContentURI
         isGated
+        isDataAvailability
         canComment(profileId: $profileId) {
           result
         }
@@ -29111,6 +29547,7 @@ export const CommentFieldsFragmentDoc = gql`
     hasCollectedByMe
     onChainContentURI
     isGated
+    isDataAvailability
     canComment(profileId: $profileId) {
       result
     }
@@ -29153,6 +29590,7 @@ export const CommentFieldsFragmentDoc = gql`
         hasCollectedByMe
         onChainContentURI
         isGated
+        isDataAvailability
         canComment(profileId: $profileId) {
           result
         }
@@ -29381,6 +29819,62 @@ export type BroadcastMutationResult = Apollo.MutationResult<BroadcastMutation>;
 export type BroadcastMutationOptions = Apollo.BaseMutationOptions<
   BroadcastMutation,
   BroadcastMutationVariables
+>;
+export const BroadcastDataAvailabilityDocument = gql`
+  mutation BroadcastDataAvailability($request: BroadcastRequest!) {
+    broadcastDataAvailability(request: $request) {
+      ... on CreateDataAvailabilityPublicationResult {
+        id
+        proofs
+      }
+      ... on BroadcastDataAvailabilityError {
+        reason
+      }
+    }
+  }
+`;
+export type BroadcastDataAvailabilityMutationFn = Apollo.MutationFunction<
+  BroadcastDataAvailabilityMutation,
+  BroadcastDataAvailabilityMutationVariables
+>;
+
+/**
+ * __useBroadcastDataAvailabilityMutation__
+ *
+ * To run a mutation, you first call `useBroadcastDataAvailabilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBroadcastDataAvailabilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [broadcastDataAvailabilityMutation, { data, loading, error }] = useBroadcastDataAvailabilityMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useBroadcastDataAvailabilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    BroadcastDataAvailabilityMutation,
+    BroadcastDataAvailabilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<BroadcastDataAvailabilityMutation, BroadcastDataAvailabilityMutationVariables>(
+    BroadcastDataAvailabilityDocument,
+    options
+  );
+}
+export type BroadcastDataAvailabilityMutationHookResult = ReturnType<
+  typeof useBroadcastDataAvailabilityMutation
+>;
+export type BroadcastDataAvailabilityMutationResult =
+  Apollo.MutationResult<BroadcastDataAvailabilityMutation>;
+export type BroadcastDataAvailabilityMutationOptions = Apollo.BaseMutationOptions<
+  BroadcastDataAvailabilityMutation,
+  BroadcastDataAvailabilityMutationVariables
 >;
 export const CreateBurnProfileTypedDataDocument = gql`
   mutation CreateBurnProfileTypedData($options: TypedDataOptions, $request: BurnProfileRequest!) {
@@ -29649,6 +30143,234 @@ export type CreateCommentViaDispatcherMutationResult =
 export type CreateCommentViaDispatcherMutationOptions = Apollo.BaseMutationOptions<
   CreateCommentViaDispatcherMutation,
   CreateCommentViaDispatcherMutationVariables
+>;
+export const CreateDataAvailabilityCommentViaDispatcherDocument = gql`
+  mutation CreateDataAvailabilityCommentViaDispatcher($request: CreateDataAvailabilityCommentRequest!) {
+    createDataAvailabilityCommentViaDispatcher(request: $request) {
+      id
+      proofs
+    }
+  }
+`;
+export type CreateDataAvailabilityCommentViaDispatcherMutationFn = Apollo.MutationFunction<
+  CreateDataAvailabilityCommentViaDispatcherMutation,
+  CreateDataAvailabilityCommentViaDispatcherMutationVariables
+>;
+
+/**
+ * __useCreateDataAvailabilityCommentViaDispatcherMutation__
+ *
+ * To run a mutation, you first call `useCreateDataAvailabilityCommentViaDispatcherMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDataAvailabilityCommentViaDispatcherMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDataAvailabilityCommentViaDispatcherMutation, { data, loading, error }] = useCreateDataAvailabilityCommentViaDispatcherMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateDataAvailabilityCommentViaDispatcherMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDataAvailabilityCommentViaDispatcherMutation,
+    CreateDataAvailabilityCommentViaDispatcherMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateDataAvailabilityCommentViaDispatcherMutation,
+    CreateDataAvailabilityCommentViaDispatcherMutationVariables
+  >(CreateDataAvailabilityCommentViaDispatcherDocument, options);
+}
+export type CreateDataAvailabilityCommentViaDispatcherMutationHookResult = ReturnType<
+  typeof useCreateDataAvailabilityCommentViaDispatcherMutation
+>;
+export type CreateDataAvailabilityCommentViaDispatcherMutationResult =
+  Apollo.MutationResult<CreateDataAvailabilityCommentViaDispatcherMutation>;
+export type CreateDataAvailabilityCommentViaDispatcherMutationOptions = Apollo.BaseMutationOptions<
+  CreateDataAvailabilityCommentViaDispatcherMutation,
+  CreateDataAvailabilityCommentViaDispatcherMutationVariables
+>;
+export const CreateDataAvailabilityMirrorViaDispatcherDocument = gql`
+  mutation CreateDataAvailabilityMirrorViaDispatcher($request: CreateDataAvailabilityMirrorRequest!) {
+    createDataAvailabilityMirrorViaDispatcher(request: $request) {
+      id
+      proofs
+    }
+  }
+`;
+export type CreateDataAvailabilityMirrorViaDispatcherMutationFn = Apollo.MutationFunction<
+  CreateDataAvailabilityMirrorViaDispatcherMutation,
+  CreateDataAvailabilityMirrorViaDispatcherMutationVariables
+>;
+
+/**
+ * __useCreateDataAvailabilityMirrorViaDispatcherMutation__
+ *
+ * To run a mutation, you first call `useCreateDataAvailabilityMirrorViaDispatcherMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDataAvailabilityMirrorViaDispatcherMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDataAvailabilityMirrorViaDispatcherMutation, { data, loading, error }] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateDataAvailabilityMirrorViaDispatcherMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDataAvailabilityMirrorViaDispatcherMutation,
+    CreateDataAvailabilityMirrorViaDispatcherMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateDataAvailabilityMirrorViaDispatcherMutation,
+    CreateDataAvailabilityMirrorViaDispatcherMutationVariables
+  >(CreateDataAvailabilityMirrorViaDispatcherDocument, options);
+}
+export type CreateDataAvailabilityMirrorViaDispatcherMutationHookResult = ReturnType<
+  typeof useCreateDataAvailabilityMirrorViaDispatcherMutation
+>;
+export type CreateDataAvailabilityMirrorViaDispatcherMutationResult =
+  Apollo.MutationResult<CreateDataAvailabilityMirrorViaDispatcherMutation>;
+export type CreateDataAvailabilityMirrorViaDispatcherMutationOptions = Apollo.BaseMutationOptions<
+  CreateDataAvailabilityMirrorViaDispatcherMutation,
+  CreateDataAvailabilityMirrorViaDispatcherMutationVariables
+>;
+export const CreateDataAvailabilityPostTypedDataDocument = gql`
+  mutation CreateDataAvailabilityPostTypedData($request: CreateDataAvailabilityPostRequest!) {
+    createDataAvailabilityPostTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          PostWithSig {
+            name
+            type
+          }
+        }
+        domain {
+          name
+          chainId
+          version
+          verifyingContract
+        }
+        value {
+          nonce
+          deadline
+          profileId
+          contentURI
+          collectModule
+          collectModuleInitData
+          referenceModule
+          referenceModuleInitData
+        }
+      }
+    }
+  }
+`;
+export type CreateDataAvailabilityPostTypedDataMutationFn = Apollo.MutationFunction<
+  CreateDataAvailabilityPostTypedDataMutation,
+  CreateDataAvailabilityPostTypedDataMutationVariables
+>;
+
+/**
+ * __useCreateDataAvailabilityPostTypedDataMutation__
+ *
+ * To run a mutation, you first call `useCreateDataAvailabilityPostTypedDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDataAvailabilityPostTypedDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDataAvailabilityPostTypedDataMutation, { data, loading, error }] = useCreateDataAvailabilityPostTypedDataMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateDataAvailabilityPostTypedDataMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDataAvailabilityPostTypedDataMutation,
+    CreateDataAvailabilityPostTypedDataMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateDataAvailabilityPostTypedDataMutation,
+    CreateDataAvailabilityPostTypedDataMutationVariables
+  >(CreateDataAvailabilityPostTypedDataDocument, options);
+}
+export type CreateDataAvailabilityPostTypedDataMutationHookResult = ReturnType<
+  typeof useCreateDataAvailabilityPostTypedDataMutation
+>;
+export type CreateDataAvailabilityPostTypedDataMutationResult =
+  Apollo.MutationResult<CreateDataAvailabilityPostTypedDataMutation>;
+export type CreateDataAvailabilityPostTypedDataMutationOptions = Apollo.BaseMutationOptions<
+  CreateDataAvailabilityPostTypedDataMutation,
+  CreateDataAvailabilityPostTypedDataMutationVariables
+>;
+export const CreateDataAvailabilityPostViaDispatcherDocument = gql`
+  mutation CreateDataAvailabilityPostViaDispatcher($request: CreateDataAvailabilityPostRequest!) {
+    createDataAvailabilityPostViaDispatcher(request: $request) {
+      id
+      proofs
+    }
+  }
+`;
+export type CreateDataAvailabilityPostViaDispatcherMutationFn = Apollo.MutationFunction<
+  CreateDataAvailabilityPostViaDispatcherMutation,
+  CreateDataAvailabilityPostViaDispatcherMutationVariables
+>;
+
+/**
+ * __useCreateDataAvailabilityPostViaDispatcherMutation__
+ *
+ * To run a mutation, you first call `useCreateDataAvailabilityPostViaDispatcherMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDataAvailabilityPostViaDispatcherMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDataAvailabilityPostViaDispatcherMutation, { data, loading, error }] = useCreateDataAvailabilityPostViaDispatcherMutation({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useCreateDataAvailabilityPostViaDispatcherMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDataAvailabilityPostViaDispatcherMutation,
+    CreateDataAvailabilityPostViaDispatcherMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateDataAvailabilityPostViaDispatcherMutation,
+    CreateDataAvailabilityPostViaDispatcherMutationVariables
+  >(CreateDataAvailabilityPostViaDispatcherDocument, options);
+}
+export type CreateDataAvailabilityPostViaDispatcherMutationHookResult = ReturnType<
+  typeof useCreateDataAvailabilityPostViaDispatcherMutation
+>;
+export type CreateDataAvailabilityPostViaDispatcherMutationResult =
+  Apollo.MutationResult<CreateDataAvailabilityPostViaDispatcherMutation>;
+export type CreateDataAvailabilityPostViaDispatcherMutationOptions = Apollo.BaseMutationOptions<
+  CreateDataAvailabilityPostViaDispatcherMutation,
+  CreateDataAvailabilityPostViaDispatcherMutationVariables
 >;
 export const CreateFollowTypedDataDocument = gql`
   mutation CreateFollowTypedData($options: TypedDataOptions, $request: FollowRequest!) {
