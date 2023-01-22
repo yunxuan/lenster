@@ -152,7 +152,7 @@ const Mirror: FC<Props> = ({ publication, showCount }) => {
     }
 
     try {
-      const request = {
+      const request: CreateMirrorRequest = {
         profileId: currentProfile?.id,
         publicationId: publication?.id,
         referenceModule: {
